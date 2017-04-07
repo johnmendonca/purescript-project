@@ -9,9 +9,9 @@ wrap = require 'gulp-wrap'
 
 src   = './src/'
 build = './build/'
-templates = "#{src}templates/"
 
-html_src = ["#{src}**/*.html", "!#{templates}**"]
+templates = "#{src}templates/"
+html_src  = "#{src}html/**/*.html"
 sass_src  = "#{src}sass/**/*.scss"
 asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
