@@ -4,13 +4,17 @@ connect = require 'gulp-connect'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 bower_files = require 'main-bower-files'
+markdown = require 'gulp-markdown'
+wrap = require 'gulp-wrap'
 
 src   = './src/'
 build = './build/'
+templates = "#{src}templates/"
 
-html_src = ["#{src}**/*.html", "!#{src}templates/**"]
-sass_src = "#{src}sass/**/*.scss"
+html_src = ["#{src}**/*.html", "!#{templates}**"]
+sass_src  = "#{src}sass/**/*.scss"
 asset_src = "#{src}assets/**/*"
+md_src    = "#{src}md/**/*.md"
 
 gulp.task 'server', ->
   connect.server
@@ -51,11 +55,20 @@ gulp.task 'html', ->
     .pipe gulp.dest(build)
     .pipe connect.reload()
 
+gulp.task 'md', ->
+  gulp.src md_src
+    .pipe markdown()
+    .pipe wrap(src: "#{templates}layout.html")
+    .pipe gulp.dest(build)
+    .pipe connect.reload()
+
 gulp.task 'watch', ->
   gulp.watch asset_src, ['assets']
   gulp.watch sass_src, ['sass']
   gulp.watch html_src, ['html']
+  gulp.watch md_src, ['md']
+  gulp.watch "#{templates}**", ['md']
 
-gulp.task 'build', ['ie8_js', 'vendor_js', 'assets', 'sass', 'html']
+gulp.task 'build', ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'md']
 gulp.task 'default', ['build', 'server', 'watch']
 
