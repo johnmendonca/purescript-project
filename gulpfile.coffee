@@ -6,6 +6,7 @@ uglify = require 'gulp-uglify'
 bower_files = require 'main-bower-files'
 markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
+front_matter = require 'gulp-front-matter'
 
 src   = './src/'
 build = './build/'
@@ -57,6 +58,9 @@ gulp.task 'html', ->
 
 gulp.task 'md', ->
   gulp.src md_src
+    .pipe front_matter(
+      property: 'front',
+      remove: true)
     .pipe markdown()
     .pipe wrap(src: "#{templates}layout.html")
     .pipe gulp.dest(build)
