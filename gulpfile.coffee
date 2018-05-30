@@ -7,6 +7,7 @@ bower_files = require 'main-bower-files'
 markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
+ext_replace = require 'gulp-ext-replace'
 
 src   = './src/'
 build = './build/'
@@ -63,6 +64,7 @@ gulp.task 'md', ->
       remove: true)
     .pipe markdown()
     .pipe wrap(src: "#{templates}layout.html")
+    .pipe ext_replace('.html')
     .pipe gulp.dest(build)
     .pipe connect.reload()
 
