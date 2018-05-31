@@ -4,6 +4,10 @@ connect = require 'gulp-connect'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 bower_files = require 'main-bower-files'
+markdown = require 'gulp-markdown'
+wrap = require 'gulp-wrap'
+front_matter = require 'gulp-front-matter'
+ext_replace = require 'gulp-ext-replace'
 process = require 'child_process'
 purescript = require 'gulp-purescript'
 browserify = require 'browserify'
@@ -13,9 +17,11 @@ buffer = require 'vinyl-buffer'
 src   = './src/'
 build = './build/'
 
-html_src = "#{src}**/*.html"
-sass_src = "#{src}sass/**/*.scss"
+templates = "#{src}templates/"
+html_src  = "#{src}html/**/*.html"
+sass_src  = "#{src}sass/**/*.scss"
 asset_src = "#{src}assets/**/*"
+md_src    = "#{src}md/**/*.md"
 purs_src = [
   "src/**/*.purs",
   "bower_components/purescript-*/src/**/*.purs" ]
@@ -59,6 +65,17 @@ gulp.task 'html', ->
     .pipe gulp.dest(build)
     .pipe connect.reload()
 
+gulp.task 'md', ->
+  gulp.src md_src
+    .pipe front_matter(
+      property: 'front',
+      remove: true)
+    .pipe markdown()
+    .pipe wrap(src: "#{templates}layout.html")
+    .pipe ext_replace('.html')
+    .pipe gulp.dest(build)
+    .pipe connect.reload()
+
 gulp.task 'psc', ->
   purescript.compile(src: purs_src)
 
@@ -89,8 +106,10 @@ gulp.task 'watch', ->
   gulp.watch asset_src, ['assets']
   gulp.watch sass_src, ['sass']
   gulp.watch html_src, ['html']
+  gulp.watch md_src, ['md']
+  gulp.watch "#{templates}**", ['md']
   gulp.watch purs_src, ['browserify']
 
-gulp.task 'build', ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'browserify']
+gulp.task 'build', ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'md', 'browserify']
 gulp.task 'default', ['build', 'server', 'watch']
 
