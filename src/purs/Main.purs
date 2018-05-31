@@ -1,9 +1,9 @@
 module Main where
 
 import Prelude (Unit)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Effect (Effect)
+import Effect.Console (log)
 
-main :: ∀ t1. Eff ( console ∷ CONSOLE | t1 ) Unit
+main :: Effect Unit
 main = log "Hello"
 
